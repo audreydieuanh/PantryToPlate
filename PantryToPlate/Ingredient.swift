@@ -14,11 +14,11 @@ struct FoodGroup {
     let ingredients: [Ingredient]
 }
 
-struct Ingredient: Identifiable {
-    let id: UUID
-    let name: String
-    let count: Int
-    let addDate: Date
-    let expiryDate: Date
-    let category: String
-}
+//struct Ingredient: Identifiable {
+//    let id: UUID
+//    let name: String
+//    let count: Int
+//    let addDate: Date
+//    let expiryDate: Date
+//    let category: String
+//}

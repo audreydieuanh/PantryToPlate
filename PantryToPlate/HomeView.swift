@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct HomeView: View {
     let foodGroups = [
@@ -14,6 +15,9 @@ struct HomeView: View {
         "Dairy": Color(red: 1.0, green: 0.95, blue: 0.6),
         "Protein": Color.red,
         "Grains": Color(red: 0.8, green: 0.52, blue: 0.25)]
+    
+    @FetchRequest(entity: Ingredient.entity(), sortDescriptors: []) var ingredients: FetchedResults<Ingredient>
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -22,9 +26,14 @@ struct HomeView: View {
                         .font(.largeTitle)
                         .padding()
                     
+                    NavigationLink(destination: RecipeView()) {
+                        Text("Available Recipes")
+                            .foregroundStyle(.primary)
+                    }
+                    
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 20) {
                         ForEach(foodGroups.keys.sorted(), id: \.self) { group in
-                            NavigationLink(destination: FoodGroupGridView(group: group)) {
+                            NavigationLink(destination: FoodGroupGridView(group: group, ingredients: ingredientsForGroup(group))) {
                                 VStack {
                                     Image(systemName: "fork.knife")
                                         .resizable()
@@ -45,28 +54,39 @@ struct HomeView: View {
                         }
                     }
                     .padding()
+                    
+                    NavigationLink(destination: AddView()) {
+                        Text("+")
+                            .font(.headline)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundStyle(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
                 }
                 .navigationTitle("")
             }
         }
     }
+    
+    func ingredientsForGroup(_ group: String) -> [Ingredient] {
+        return ingredients.filter { $0.category?.lowercased() == group.lowercased() }
+        }
 }
 
 struct FoodGroupGridView: View {
     var group: String
+    var ingredients: [Ingredient]
     
     var body: some View {
-        VStack {
-            Text("Inventory for \(group.lowercased())")
-                .font(.largeTitle)
-            
-        }
-        .navigationTitle(group)
+        FoodGroupDetailView(foodGroup: FoodGroup(name: group, color: .gray, ingredients: ingredients))
     }
 }
 
 struct HomePreview: PreviewProvider {
     static var previews: some View {
+        let context = DataManager.preview.persistentContainer.viewContext
         HomeView()
+            .environment(\.managedObjectContext, context)
     }
 }

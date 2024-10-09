@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct PantryToPlateApp: App {
+    @StateObject private var dataManager = DataManager.shared
+    
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .environment(\.managedObjectContext, dataManager.persistentContainer.viewContext)
         }
     }
 }
