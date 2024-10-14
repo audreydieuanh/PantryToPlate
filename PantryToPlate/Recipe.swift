@@ -26,7 +26,7 @@ struct Recipe: Codable, Identifiable {
 
 class RecipeAPI {
     static let shared = RecipeAPI()
-    private let apiKey = "3084cc0a18c34473a0f5c2b441a2a610"
+    private let apiKey = ""
     private var cancellables = Set<AnyCancellable>()
     
     
